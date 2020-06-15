@@ -11,7 +11,8 @@
     when: (self_signed|bool and regenerate_ca|bool and kafka_broker_listeners | ssl_required(ssl_enabled)) or create_mds_certs|bool
 
 - name: Host Prerequisites
-  hosts: zookeeper:kafka_broker:schema_registry:kafka_connect:ksql:control_center:kafka_rest
+  hosts: zookeeper:kafka_broker:schema_registry:kafka_connect
+
   tags: common
   environment: "{{ proxy_env }}"
   tasks:
@@ -41,7 +42,6 @@
   tasks:
   - import_role:
       name: confluent.schema_registry
-
 - name: Kafta Connect Provisioning
   hosts: kafka_connect
   tags: kafka_connect
@@ -49,27 +49,3 @@
   tasks:
   - import_role:
       name: confluent.kafka_connect
-
-- name: KSQL Provisioning
-  hosts: ksql
-  tags: ksql
-  environment: "{{ proxy_env }}"
-  tasks:
-  - import_role:
-      name: confluent.ksql
-
-- name: Kafka Rest Provisioning
-  hosts: kafka_rest
-  tags: kafka_rest
-  environment: "{{ proxy_env }}"
-  tasks:
-  - import_role:
-      name: confluent.kafka_rest
-
-- name: Control Center Provisioning
-  hosts: control_center
-  tags: control_center
-  environment: "{{ proxy_env }}"
-  tasks:
-  - import_role:
-      name: confluent.control_center
